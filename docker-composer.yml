@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  # 1. Node.js API Service
+  api:
+    build: .
+    container_name: rag-api
+    env_file:
+      - .env
+    ports:
+      - "${PORT}:${PORT}"
+    # Wait for all three local databases to be ready
+    depends_on:
+      - postgres
+      - redis
+      - qdrant
+    restart: always
+    # IMPORTANT: Ensure your Node app uses the service names (postgres, redis, qdrant) as HOSTNAMES.
+
+  # 2. PostgreSQL Service (Primary DB for Structured Logs)
+  postgres:
+    image: postgres:15-alpine
+    container_name: rag-postgres
+    # The environment section uses the values defined in your .env file
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      # Persist the SQL data on the host machine
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+
+  # 3. Redis Service (Caching for Conversation Context)
+  redis:
+    image: redis:7-alpine
+    container_name: rag-redis
+    volumes:
+      # Persist Redis data
+      - redis_data:/data
+    restart: always
+
+  # 4. Qdrant Service (Vector Database for Semantic Search)
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: rag-qdrant
+    volumes:
+      # Persist the vector embeddings and metadata
+      - qdrant_storage:/qdrant/storage
+    ports:
+      # Expose the API port for potential host access
+      - "6333:6333"
+    restart: always
+
+# Define named volumes for persistence
+volumes:
+  postgres_data:
+  redis_data:
+  qdrant_storage:
