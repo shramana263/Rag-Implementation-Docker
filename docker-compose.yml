@@ -1,0 +1,78 @@
+# version: '3.8'
+
+services:
+  # 1. Node.js API Service
+  api:
+    build: .
+    container_name: rag-api
+    # CRITICAL: Inject all environment variables (including API keys) from the .env file
+    env_file:
+      - ./.env
+    ports:
+      # Change the host port from 3000 to 4000 for safety against conflicts
+      - "4000:${PORT}" 
+    # CRITICAL: Wait for dependent services to be explicitly 'healthy'
+    depends_on:
+      postgres:
+        condition: service_started 
+      redis:
+        condition: service_started 
+      qdrant:
+        condition: service_started 
+    restart: always
+    # Note: Your Node.js app must use the service names (postgres, redis, qdrant) as HOSTNAMES.
+
+  # 2. PostgreSQL Service (Primary DB for Structured Logs)
+  postgres:
+    image: postgres:15-alpine
+    container_name: rag-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+    healthcheck: # Waits until the database is ready for connections
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  # 3. Redis Service (Caching for Conversation Context)
+  redis:
+    image: redis:7-alpine
+    container_name: rag-redis
+    volumes:
+      - redis_data:/data
+    restart: always
+    healthcheck: # Waits until Redis is responding to the PING command
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+
+  # 4. Qdrant Service (Vector Database for Semantic Search)
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: rag-qdrant
+    volumes:
+      - qdrant_storage:/qdrant/storage
+    ports:
+      # Expose the API port for potential host access
+      - "6333:6333"
+    restart: always
+    healthcheck: # Waits until Qdrant's internal health endpoint returns OK
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:6333/readyz || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+# Define named volumes for persistence
+volumes:
+  postgres_data:
+  redis_data:
+  qdrant_storage:

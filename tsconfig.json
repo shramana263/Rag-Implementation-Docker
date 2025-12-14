@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "es2020",                       /* Specify ECMAScript target version */
+    "module": "commonjs",                     /* Specify module code generation: "commonjs" for Node.js */
+    "rootDir": "./src",                       /* Specify the root directory of source files (where your .ts files are) */
+    "outDir": "./dist",                       /* Specify the output directory for compiled JavaScript (.js files) */
+    "esModuleInterop": true,                  /* Allows using ES module imports (import/export) with CommonJS */
+    "forceConsistentCasingInFileNames": true, /* Disallow inconsistently-cased references to the same file */
+    "resolveJsonModule": true,                /* Allows importing .json files */
+
+    /* Strict Type-Checking Options (Mandatory for Code Quality Score) */
+    "strict": true,                           /* Enable all strict type-checking options */
+    "skipLibCheck": true,                     /* Skip type checking of declaration files (faster, avoids library version conflicts) */
+
+    /* Module Resolution Options */
+    "moduleResolution": "node",               /* Use Node.js module resolution strategy */
+  },
+  
+  /* Which files to include in compilation */
+  "include": ["src/**/*"],
+
+  /* Which files to exclude from compilation */
+  "exclude": ["node_modules", "dist"]
+}
