@@ -4,6 +4,7 @@ import 'dotenv/config'; // Use dotenv for environment variable loading
 import express from 'express';
 import { initPostgres } from './config/postgres';
 import { initRedis } from './config/redis';
+import { initQdrant } from './config/qdrant';
 // Import other routes/services here (e.g., Qdrant init, Express routes)
 
 const app = express();
@@ -18,6 +19,7 @@ async function startServer() {
         // 1. Initialize all required databases
         await initPostgres(); // SQL (Logs/History)
         await initRedis();    // Redis (Caching/Context)
+        await initQdrant();
         // Note: Qdrant initialization (creating collections) will be next
         
         // 2. Set up routes
