@@ -43,7 +43,8 @@ export async function initPostgres(): Promise<void> {
         console.log("✅ PostgreSQL connected and 'interaction_logs' table initialized.");
     } catch (err) {
         console.error("❌ Error initializing PostgreSQL:", err);
-        // In a production app, you might want to exit here
+        // Rethrow the error so the retry logic can handle it
+        throw err;
     }
 }
 
