@@ -3,13 +3,13 @@
 import { JinaEmbeddings } from '@langchain/community/embeddings/jina';
 // import { VECTOR_DIMENSION } from '../config/qdrant'; // Not needed in this file
 
-// We choose a Jina model that aligns with our 768 dimension set in qdrant.ts
-const JINA_MODEL = "jina-embeddings-v2-base-en"; 
+// We choose a Jina model that aligns with our 1024 dimension set in qdrant.ts
+// Using jina-embeddings-v3 which produces 1024-dimensional vectors
+const JINA_MODEL = "jina-embeddings-v3"; 
 
 const jinaEmbeddings = new JinaEmbeddings({
-    // apiKey: process.env.JINA_API_KEY, // LangChain will read this automatically from env
-
-    // --- FIX: Removed the unsupported 'inputType' property ---
+    // Explicitly pass the API key read from the environment
+    apiKey: process.env.JINA_API_KEY, 
     model: JINA_MODEL,
 });
 

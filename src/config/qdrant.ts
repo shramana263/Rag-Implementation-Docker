@@ -13,8 +13,8 @@ const qdrantClient = new QdrantClient({
 // --- Constants ---
 // Choose a standard dimension for your embeddings. 
 // If using Jina Embeddings v2 (as suggested) or a common HuggingFace model, 
-// 768 or 1024 are typical. We'll use 768 as a safe default.
-const VECTOR_DIMENSION = 768; 
+// 768 or 1024 are typical. We'll use 1024 for Jina v3.
+const VECTOR_DIMENSION = 1024; 
 const COLLECTION_NAME = 'news_articles';
 
 /**

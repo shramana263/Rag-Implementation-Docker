@@ -2,7 +2,7 @@
 
 import { Request, Response } from 'express';
 import { runIngestionPipeline } from '../services/IngestionService';
-import { mockNewsArticles } from '../data/mockNwesData';
+import { mockNewsArticles } from '../data/mockNewsData';
 
 /**
  * Handles the POST /ingest request to trigger the document processing pipeline.

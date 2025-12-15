@@ -3,7 +3,7 @@
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 import { embedDocuments } from './EmbeddingService';
 import { storeVectors, ArticleChunkPayload, QdrantPointStruct } from './VectorService';
-import { mockNewsArticles } from '../data/mockNwesData';
+import { mockNewsArticles } from '../data/mockNewsData';
 import { RawArticle } from '../types/article'; // Assuming you created this file
 
 // Define Text Splitter
@@ -69,9 +69,10 @@ export async function runIngestionPipeline(): Promise<number> {
                 chunkId: chunk.chunkId,
             };
             
-            // Create a unique ID for the point (vector)
+            // Create a unique ID for the point (vector) - Qdrant requires integer or UUID
+            // Using index as a simple integer ID
             return {
-                id: `${chunk.article.id}_${chunk.chunkId}`, 
+                id: index, 
                 vector: embeddings[index],
                 payload: payload,
             } as QdrantPointStruct;
