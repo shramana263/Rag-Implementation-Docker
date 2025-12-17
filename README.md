@@ -1,33 +1,33 @@
-# Scalable RAG API for News Intelligence
+# RAG API design for News Intelligence
 
 A production-ready Retrieval-Augmented Generation (RAG) system built with TypeScript, Express, and modern AI technologies. This API enables intelligent question-answering over a corpus of 50 news articles using vector similarity search and Google's Gemini AI.
 
-## 🏗️ Architecture Overview
+## Architecture Overview
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                        Client                                │
+│                        Client                               │
 └────────────────────────┬────────────────────────────────────┘
                          │
                          ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                   Express API (Node.js)                      │
-│  ┌────────────┐  ┌────────────┐  ┌───────────────────┐    │
-│  │ Ingestion  │  │   Chat     │  │    History        │    │
-│  │ Controller │  │ Controller │  │   Controller      │    │
-│  └─────┬──────┘  └─────┬──────┘  └────────┬──────────┘    │
+│                   Express API (Node.js)                     │
+│  ┌────────────┐  ┌────────────┐  ┌───────────────────┐      │
+│  │ Ingestion  │  │   Chat     │  │    History        │      │
+│  │ Controller │  │ Controller │  │   Controller      │      │
+│  └─────┬──────┘  └─────┬──────┘  └────────┬──────────┘      │
 │        │                │                   │               │
-│  ┌─────▼──────┐  ┌─────▼──────┐  ┌────────▼──────────┐    │
-│  │ Ingestion  │  │   Chat     │  │  Log + Cache      │    │
-│  │  Service   │  │  Service   │  │   Services        │    │
-│  └─────┬──────┘  └─────┬──────┘  └────────┬──────────┘    │
+│  ┌─────▼──────┐  ┌─────▼──────┐  ┌────────▼──────────┐      │
+│  │ Ingestion  │  │   Chat     │  │  Log + Cache      │      │
+│  │  Service   │  │  Service   │  │   Services        │      │
+│  └─────┬──────┘  └─────┬──────┘  └────────┬──────────┘      │
 └────────┼────────────────┼───────────────────┼───────────────┘
          │                │                   │
          ▼                ▼                   ▼
-┌────────────────┐ ┌────────────┐ ┌──────────────────┐
-│    Qdrant      │ │   Redis    │ │   PostgreSQL     │
-│ (Vector Store) │ │  (Cache)   │ │    (Logs)        │
-└────────────────┘ └────────────┘ └──────────────────┘
+┌────────────────┐ ┌────────────┐ ┌─────────────────┐
+│    Qdrant      │ │   Redis    │ │   PostgreSQL    │
+│ (Vector Store) │ │  (Cache)   │ │    (Logs)       │
+└────────────────┘ └────────────┘ └─────────────────┘
          │                │
          │                ▼
          │         ┌─────────────────┐
@@ -43,14 +43,13 @@ A production-ready Retrieval-Augmented Generation (RAG) system built with TypeSc
 - **Vector Database**: Qdrant
 - **Cache**: Redis
 - **SQL Database**: PostgreSQL
-- **Embeddings**: Jina AI Embeddings v3 (1024-dim)
+- **Embeddings**: Jina AI Embeddings v3 (1024-dimension)
 - **LLM**: Google Gemini 2.5 Flash
 - **Containerization**: Docker & Docker Compose
 - **Text Processing**: LangChain Text Splitters
 
 ---
 
-## 🚀 Quick Start
 
 ### Prerequisites
 
@@ -73,11 +72,11 @@ A production-ready Retrieval-Augmented Generation (RAG) system built with TypeSc
    
    Edit `.env` and add your API keys:
    ```env
-   GEMINI_API_KEY=your_gemini_api_key_here
-   JINA_API_KEY=your_jina_api_key_here
+   GEMINI_API_KEY=put_gemini_api_key_here
+   JINA_API_KEY=put_jina_api_key_here
    ```
 
-   Get API keys from:
+   Get the API keys from:
    - Gemini: https://ai.google.dev/
    - Jina AI: https://jina.ai/embeddings/
 
@@ -102,13 +101,13 @@ A production-ready Retrieval-Augmented Generation (RAG) system built with TypeSc
    ```json
    {
      "status": "ok",
-     "service": "Scalable RAG API for News Intelligence"
+     "service": "RAG API for News Project"
    }
    ```
 
----
 
-## 📚 API Documentation
+
+## API Documentation
 
 ### Base URL
 ```
@@ -121,7 +120,7 @@ http://localhost:4000/api
 
 **POST** `/api/ingest`
 
-Processes 50 news articles, generates embeddings, and stores vectors in Qdrant.
+It processes 50 news articles, generates embeddings, and stores vectors in Qdrant DB.
 
 **Request**
 ```bash
@@ -143,9 +142,9 @@ curl -X POST http://localhost:4000/api/ingest
 - Processing time: 15-30 seconds
 - Run this once before using the chat endpoint
 
----
 
-#### 2. Chat / Ask Questions
+
+#### 2. Chat / Asking Questions related to the news stored
 
 **POST** `/api/chat`
 
@@ -154,7 +153,7 @@ Submit a query and receive an AI-generated response based on retrieved news arti
 **Request**
 ```bash
 curl -X POST http://localhost:4000/api/chat \
-  -H "Content-Type: application/json" \
+  -H "Content-Type: application/json"
   -d '{
     "sessionId": "user123",
     "query": "What are the latest developments in renewable energy?"
@@ -249,7 +248,7 @@ curl -X DELETE http://localhost:4000/api/history/user123
 
 ---
 
-## 🔧 Development
+## Development
 
 ### Local Development (Without Docker)
 
@@ -291,7 +290,7 @@ npm run build  # Compiles src/ to dist/
 
 ---
 
-## 🗂️ Project Structure
+## Project Structure
 
 ```
 rag-api-project/
@@ -327,9 +326,9 @@ rag-api-project/
 └── .env.example                  # Environment template
 ```
 
----
 
-## 🧠 RAG Pipeline Details
+
+## RAG Pipeline Details
 
 ### Ingestion Pipeline
 
@@ -357,16 +356,16 @@ rag-api-project/
    - Store interaction in PostgreSQL
    - Update Redis cache with new conversation state
 
----
 
-## 🔐 Environment Variables
+
+## Environment Variables
 
 | Variable | Description | Default | Required |
 |----------|-------------|---------|----------|
 | `NODE_ENV` | Environment mode | `development` | No |
 | `PORT` | API server port | `3000` | No |
 | `GEMINI_API_KEY` | Google Gemini API key | - | **Yes** |
-| `JINA_API_KEY` | Jina AI API key | - | **Yes** |
+| `JINA_API_KEY` | Jina embeddings API key | - | **Yes** |
 | `POSTGRES_USER` | PostgreSQL username | `rag_user` | No |
 | `POSTGRES_PASSWORD` | PostgreSQL password | `rag_secret` | No |
 | `POSTGRES_DB` | PostgreSQL database name | `rag_logs` | No |
@@ -379,7 +378,7 @@ rag-api-project/
 
 ---
 
-## 🐳 Docker Services
+## Docker Services
 
 ### Service Details
 
@@ -397,34 +396,8 @@ Data persists across container restarts:
 - `redis_data` - Cache snapshots
 - `qdrant_storage` - Vector embeddings
 
-### Useful Docker Commands
 
-```bash
-# View logs
-docker compose logs -f api
-
-# Restart a service
-docker compose restart api
-
-# Stop all services
-docker compose down
-
-# Stop and remove volumes (clean slate)
-docker compose down -v
-
-# Access PostgreSQL
-docker exec -it rag-postgres psql -U rag_user -d rag_logs
-
-# Access Redis CLI
-docker exec -it rag-redis redis-cli
-
-# View Qdrant dashboard
-open http://localhost:6333/dashboard
-```
-
----
-
-## 📊 Database Schemas
+## Database Schemas
 
 ### PostgreSQL: `interaction_logs` Table
 
@@ -463,7 +436,7 @@ TTL: 3600 seconds (1 hour)
 
 ---
 
-## 🧪 Testing
+## Testing
 
 ### Manual Testing Workflow
 
@@ -504,7 +477,7 @@ TTL: 3600 seconds (1 hour)
 
 ---
 
-## 🚨 Troubleshooting
+## Troubleshooting
 
 ### Services Won't Start
 
@@ -557,9 +530,9 @@ TTL: 3600 seconds (1 hour)
 2. Reduce chunk processing batch size in `IngestionService.ts`
 3. Process articles in smaller batches
 
----
 
-## 🎯 Performance Considerations
+
+## Performance Considerations
 
 - **Ingestion**: ~20-30 seconds for 50 articles
 - **Chat Response**: 1-3 seconds average
@@ -573,31 +546,5 @@ TTL: 3600 seconds (1 hour)
 3. **Vector Search**: Top-4 retrieval balances accuracy and speed
 4. **Chunking Strategy**: 1024 chars maintains semantic coherence
 
----
 
-## 📝 License
-
-This project is developed as part of an assessment for Edwid Tech PVT LTD.
-
----
-
-## 🤝 Support
-
-For issues or questions:
-1. Check logs: `docker compose logs -f api`
-2. Verify environment variables: `docker compose config`
-3. Review this README carefully
-
----
-
-## 🔄 Recent Updates
-
-- ✅ Multi-stage Docker build for optimized image size
-- ✅ Health checks for all database services
-- ✅ Retry logic for service initialization
-- ✅ TypeScript strict mode enabled
-- ✅ Comprehensive error handling
-
----
-
-**Built with ❤️ for scalable AI applications**
+Thank you
