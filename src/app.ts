@@ -1,6 +1,8 @@
 // /src/app.ts
 
 import express from 'express';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './config/swagger';
 import ingestionRoutes from './routes/ingestionRoutes';
 import chatRoutes from './routes/chatRoutes';
 
@@ -12,6 +14,18 @@ app.use(express.json());
 
 // Optional Bonus: Implement a Rate Limiting Middleware here for extra credit
 
+// --- Swagger API Documentation ---
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+    customCss: '.swagger-ui .topbar { display: none }',
+    customSiteTitle: 'RAG API Documentation',
+}));
+
+// Swagger JSON endpoint
+app.get('/api-docs.json', (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(swaggerSpec);
+});
+
 // --- API Routes ---
 // POST /ingest
 app.use('/api', ingestionRoutes); 
@@ -19,6 +33,22 @@ app.use('/api', ingestionRoutes);
 app.use('/api', chatRoutes); 
 
 // --- Health Check / Default Route ---
+/**
+ * @openapi
+ * /:
+ *   get:
+ *     tags:
+ *       - Health
+ *     summary: Health check endpoint
+ *     description: Returns the API status and service name
+ *     responses:
+ *       200:
+ *         description: Service is running
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/HealthResponse'
+ */
 app.get('/', (req, res) => {
     res.status(200).json({ 
         status: 'ok', 

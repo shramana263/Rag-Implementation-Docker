@@ -10,20 +10,20 @@ A production-ready Retrieval-Augmented Generation (RAG) system built with TypeSc
 └────────────────────────┬────────────────────────────────────┘
                          │
                          ▼
-┌─────────────────────────────────────────────────────────────┐
-│                   Express API (Node.js)                     │
-│  ┌────────────┐  ┌────────────┐  ┌───────────────────┐      │
-│  │ Ingestion  │  │   Chat     │  │    History        │      │
-│  │ Controller │  │ Controller │  │   Controller      │      │
-│  └─────┬──────┘  └─────┬──────┘  └────────┬──────────┘      │
-│        │                │                   │               │
-│  ┌─────▼──────┐  ┌─────▼──────┐  ┌────────▼──────────┐      │
-│  │ Ingestion  │  │   Chat     │  │  Log + Cache      │      │
-│  │  Service   │  │  Service   │  │   Services        │      │
-│  └─────┬──────┘  └─────┬──────┘  └────────┬──────────┘      │
-└────────┼────────────────┼───────────────────┼───────────────┘
-         │                │                   │
-         ▼                ▼                   ▼
+┌───────────────────────────────────────────────────────────┐
+│                   Express API (Node.js)                   │
+│  ┌────────────┐  ┌────────────┐  ┌───────────────────┐    │
+│  │ Ingestion  │  │   Chat     │  │    History        │    │
+│  │ Controller │  │ Controller │  │   Controller      │    │
+│  └─────┬──────┘  └─────┬──────┘  └────────┬──────────┘    │
+│        │               │                  │               │
+│  ┌─────▼──────┐  ┌─────▼──────┐  ┌────────▼──────────┐    │
+│  │ Ingestion  │  │   Chat     │  │  Log + Cache      │    │
+│  │  Service   │  │  Service   │  │   Services        │    │
+│  └─────┬──────┘  └─────┬──────┘  └────────┬──────────┘    │
+└────────┼───────────────┼──────────────────┼───────────────┘
+         │               │                  │
+         ▼               ▼                  ▼
 ┌────────────────┐ ┌────────────┐ ┌─────────────────┐
 │    Qdrant      │ │   Redis    │ │   PostgreSQL    │
 │ (Vector Store) │ │  (Cache)   │ │    (Logs)       │
@@ -61,7 +61,7 @@ A production-ready Retrieval-Augmented Generation (RAG) system built with TypeSc
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/shramana263/Rag-Implementation-Docker.git
    cd rag-api-project
    ```
 
@@ -108,7 +108,11 @@ A production-ready Retrieval-Augmented Generation (RAG) system built with TypeSc
 
 
 ## API Documentation
+### Interactive Swagger UI
 
+**Live API Documentation:** [http://localhost:4000/api-docs](http://localhost:4000/api-docs)
+
+**Swagger JSON:** [http://localhost:4000/api-docs.json](http://localhost:4000/api-docs.json)
 ### Base URL
 ```
 http://localhost:4000/api
@@ -285,7 +289,7 @@ npm start
 
 The project uses strict TypeScript:
 ```bash
-npm run build  # Compiles src/ to dist/
+npm run build  
 ```
 
 ---
