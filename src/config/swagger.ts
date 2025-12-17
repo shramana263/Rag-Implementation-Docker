@@ -3,31 +3,12 @@
 import swaggerJsdoc from 'swagger-jsdoc';
 import { SwaggerOptions } from 'swagger-ui-express';
 
-const swaggerDefinition = {
+const swaggerDefinition: any = {
     openapi: '3.0.0',
     info: {
         title: 'RAG API for News Intelligence',
         version: '1.0.0',
-        description: `
-A production-ready Retrieval-Augmented Generation (RAG) system that enables intelligent 
-question-answering over a corpus of 50 news articles using vector similarity search and Google's Gemini AI.
-
-## Features
-- 🔍 Semantic search with Qdrant vector database
-- 🤖 AI-powered responses using Gemini 2.5 Flash
-- 💾 PostgreSQL for interaction logs and analytics
-- ⚡ Redis caching for conversation context
-- 🐳 Fully containerized with Docker Compose
-
-## Technology Stack
-- **Runtime**: Node.js 20 with TypeScript
-- **Framework**: Express.js
-- **Vector DB**: Qdrant
-- **Cache**: Redis
-- **SQL DB**: PostgreSQL
-- **Embeddings**: Jina AI Embeddings v3 (1024-dim)
-- **LLM**: Google Gemini 2.5 Flash
-        `.trim(),
+        description: `A production-ready Retrieval-Augmented Generation (RAG) system that enables intelligent question-answering over a corpus of 50 news articles using vector similarity search and Google's Gemini AI.`,
         contact: {
             name: 'Edwid Tech PVT LTD',
             email: 'support@edwidtech.com',
@@ -40,10 +21,6 @@ question-answering over a corpus of 50 news articles using vector similarity sea
         {
             url: 'http://localhost:4000',
             description: 'Local Development Server',
-        },
-        {
-            url: 'http://localhost:4000/api',
-            description: 'API Base Path',
         },
     ],
     tags: [
@@ -208,16 +185,176 @@ question-answering over a corpus of 50 news articles using vector similarity sea
             },
         },
     },
+    paths: {
+        '/': {
+            get: {
+                tags: ['Health'],
+                summary: 'Health check endpoint',
+                description: 'Returns the API status and service name',
+                responses: {
+                    '200': {
+                        description: 'Service is running',
+                        content: {
+                            'application/json': {
+                                schema: { $ref: '#/components/schemas/HealthResponse' }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '/api/ingest': {
+            post: {
+                tags: ['Ingestion'],
+                summary: 'Ingest documents into the vector database',
+                description: 'Processes 50 news articles through the RAG pipeline: chunks documents, generates embeddings, and stores vectors in Qdrant',
+                responses: {
+                    '200': {
+                        description: 'Documents successfully ingested',
+                        content: {
+                            'application/json': {
+                                schema: { $ref: '#/components/schemas/IngestionResponse' }
+                            }
+                        }
+                    },
+                    '500': {
+                        description: 'Ingestion failed',
+                        content: {
+                            'application/json': {
+                                schema: { $ref: '#/components/schemas/ErrorResponse' }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '/api/chat': {
+            post: {
+                tags: ['Chat'],
+                summary: 'Ask a question using RAG pipeline',
+                description: 'Submit a query and receive an AI-generated response based on retrieved news articles',
+                requestBody: {
+                    required: true,
+                    content: {
+                        'application/json': {
+                            schema: { $ref: '#/components/schemas/ChatRequest' },
+                            examples: {
+                                renewable_energy: {
+                                    summary: 'Ask about renewable energy',
+                                    value: {
+                                        sessionId: 'user123',
+                                        query: 'What are the latest developments in renewable energy?'
+                                    }
+                                },
+                                ai_technology: {
+                                    summary: 'Ask about AI',
+                                    value: {
+                                        sessionId: 'user456',
+                                        query: 'Tell me about AI technology advancements'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                responses: {
+                    '200': {
+                        description: 'Successful response',
+                        content: {
+                            'application/json': {
+                                schema: { $ref: '#/components/schemas/ChatResponse' }
+                            }
+                        }
+                    },
+                    '400': {
+                        description: 'Missing required fields',
+                        content: {
+                            'application/json': {
+                                schema: { $ref: '#/components/schemas/ErrorResponse' }
+                            }
+                        }
+                    },
+                    '500': {
+                        description: 'Internal server error',
+                        content: {
+                            'application/json': {
+                                schema: { $ref: '#/components/schemas/ErrorResponse' }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '/api/history/{sessionId}': {
+            get: {
+                tags: ['History'],
+                summary: 'Retrieve conversation history for a session',
+                description: 'Fetches all past interactions for a specific session from PostgreSQL',
+                parameters: [
+                    {
+                        in: 'path',
+                        name: 'sessionId',
+                        required: true,
+                        schema: { type: 'string' },
+                        description: 'Unique session identifier',
+                        example: 'user123'
+                    }
+                ],
+                responses: {
+                    '200': {
+                        description: 'History retrieved successfully',
+                        content: {
+                            'application/json': {
+                                schema: { $ref: '#/components/schemas/HistoryResponse' }
+                            }
+                        }
+                    },
+                    '500': {
+                        description: 'Failed to retrieve history',
+                        content: {
+                            'application/json': {
+                                schema: { $ref: '#/components/schemas/ErrorResponse' }
+                            }
+                        }
+                    }
+                }
+            },
+            delete: {
+                tags: ['History'],
+                summary: 'Clear session history',
+                description: 'Deletes all conversation data for a session from both PostgreSQL and Redis',
+                parameters: [
+                    {
+                        in: 'path',
+                        name: 'sessionId',
+                        required: true,
+                        schema: { type: 'string' },
+                        description: 'Unique session identifier',
+                        example: 'user123'
+                    }
+                ],
+                responses: {
+                    '200': {
+                        description: 'History cleared successfully',
+                        content: {
+                            'application/json': {
+                                schema: { $ref: '#/components/schemas/ClearHistoryResponse' }
+                            }
+                        }
+                    },
+                    '500': {
+                        description: 'Failed to clear history',
+                        content: {
+                            'application/json': {
+                                schema: { $ref: '#/components/schemas/ErrorResponse' }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 };
 
-const options: swaggerJsdoc.Options = {
-    definition: swaggerDefinition,
-    // Path to the API routes files with JSDoc annotations
-    apis: [
-        './src/routes/*.ts',
-        './src/controllers/*.ts',
-        './src/app.ts',
-    ],
-};
-
-export const swaggerSpec = swaggerJsdoc(options);
+// Export the spec directly
+export const swaggerSpec = swaggerDefinition;

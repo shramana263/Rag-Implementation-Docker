@@ -16,7 +16,6 @@ app.use(express.json());
 
 // --- Swagger API Documentation ---
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
-    customCss: '.swagger-ui .topbar { display: none }',
     customSiteTitle: 'RAG API Documentation',
 }));
 
