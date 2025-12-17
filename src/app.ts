@@ -1,37 +1,28 @@
-// /src/app.ts
-
 import express from 'express';
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './config/swagger';
 import ingestionRoutes from './routes/ingestionRoutes';
 import chatRoutes from './routes/chatRoutes';
+import { globalLimiter, chatLimiter, ingestionLimiter } from './middleware/rateLimiter';
 
 const app = express();
-
-// --- Middleware ---
-// Mandatory: Body parser for JSON requests (e.g., for POST /chat and POST /ingest)
 app.use(express.json()); 
+app.use(globalLimiter);
+app.use('/api/chat', chatLimiter);
+app.use('/api/ingest', ingestionLimiter); 
 
-// Optional Bonus: Implement a Rate Limiting Middleware here for extra credit
-
-// --- Swagger API Documentation ---
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
     customSiteTitle: 'RAG API Documentation',
 }));
 
-// Swagger JSON endpoint
 app.get('/api-docs.json', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.send(swaggerSpec);
 });
 
-// --- API Routes ---
-// POST /ingest
 app.use('/api', ingestionRoutes); 
-// POST /chat, GET /history/:sessionId, DELETE /history/:sessionId
 app.use('/api', chatRoutes); 
 
-// --- Health Check / Default Route ---
 /**
  * @openapi
  * /:
@@ -55,8 +46,6 @@ app.get('/', (req, res) => {
     });
 });
 
-// --- Standardized Error Handling (Mandatory) ---
-// Catch all for 404 errors
 app.use((req, res) => {
     res.status(404).json({
         status: 'error',
@@ -64,7 +53,6 @@ app.use((req, res) => {
         path: req.originalUrl,
     });
 });
-// Global error handler (e.g., for 500 errors)
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
     console.error(err.stack);
     res.status(err.status || 500).json({
