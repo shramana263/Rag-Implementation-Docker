@@ -1,5 +1,3 @@
-// /src/routes/ingestionRoutes.ts
-
 import { Router } from 'express';
 import { ingestDocuments } from '../controllers/IngestionController';
 

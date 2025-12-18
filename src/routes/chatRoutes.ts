@@ -1,5 +1,3 @@
-// /src/routes/chatRoutes.ts
-
 import { Router } from 'express';
 import { chat, getSessionHistory, deleteSessionHistory } from '../controllers/ChatController';
 
