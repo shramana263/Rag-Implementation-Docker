@@ -1,11 +1,5 @@
-# Ignore Node modules (we install them fresh inside the container)
 node_modules
-# Ignore the compiled output
 dist
-# Ignore logs and temporary files
 *.log
 tmp/
-# Ignore the Git files
 .git
-# Note: .env is handled via docker-compose env_file
-# .env
