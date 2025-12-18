@@ -1,5 +1,3 @@
-// /src/config/swagger.ts
-
 import swaggerJsdoc from 'swagger-jsdoc';
 import { SwaggerOptions } from 'swagger-ui-express';
 
@@ -356,5 +354,4 @@ const swaggerDefinition: any = {
     }
 };
 
-// Export the spec directly
 export const swaggerSpec = swaggerDefinition;

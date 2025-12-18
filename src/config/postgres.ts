@@ -1,18 +1,14 @@
-// /src/config/postgres.ts
-
 import { Pool, QueryResult } from 'pg';
 
-// --- Connection Pool ---
 const pool = new Pool({
     user: process.env.POSTGRES_USER,
-    host: process.env.POSTGRES_HOST, // 'postgres' in docker-compose
+    host: process.env.POSTGRES_HOST,
     database: process.env.POSTGRES_DB,
     password: process.env.POSTGRES_PASSWORD,
     port: parseInt(process.env.POSTGRES_PORT || '5432', 10),
     max: 20,
 });
 
-// --- Type Definition for Logs ---
 export interface InteractionLog {
     id: number;
     session_id: string;
@@ -22,14 +18,9 @@ export interface InteractionLog {
     response_time: number;
 }
 
-
-/**
- * Initializes the database by creating the mandatory interaction_logs table.
- */
 export async function initPostgres(): Promise<void> {
     try {
         console.log('Attempting to connect to PostgreSQL...');
-        // Create the table with all mandatory fields
         await pool.query(`
             CREATE TABLE IF NOT EXISTS interaction_logs (
                 id SERIAL PRIMARY KEY,
@@ -40,10 +31,9 @@ export async function initPostgres(): Promise<void> {
                 response_time DECIMAL NOT NULL
             );
         `);
-        console.log("✅ PostgreSQL connected and 'interaction_logs' table initialized.");
+        console.log("PostgreSQL connected and 'interaction_logs' table initialized.");
     } catch (err) {
-        console.error("❌ Error initializing PostgreSQL:", err);
-        // Rethrow the error so the retry logic can handle it
+        console.error("Error initializing PostgreSQL:", err);
         throw err;
     }
 }

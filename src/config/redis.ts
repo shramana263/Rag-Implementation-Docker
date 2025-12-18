@@ -1,23 +1,16 @@
-// /src/config/redis.ts
-
 import { createClient, RedisClientType } from 'redis';
-
-// Note: Ensure you run 'npm install redis @types/redis'
 
 const redisClient: RedisClientType = createClient({
     url: `redis://${process.env.REDIS_HOST || 'redis'}:${process.env.REDIS_PORT || '6379'}`,
 });
 
-/**
- * Initializes the Redis client connection.
- */
 export async function initRedis(): Promise<void> {
     try {
         redisClient.on('error', (err) => console.error('Redis Client Error:', err));
         await redisClient.connect();
-        console.log('✅ Redis connected.');
+        console.log('Redis connected.');
     } catch (err) {
-        console.error('❌ Error initializing Redis:', err);
+        console.error('Error initializing Redis:', err);
     }
 }
 

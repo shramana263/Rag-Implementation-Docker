@@ -1,25 +1,12 @@
-// /src/config/qdrant.ts
-
 import { QdrantClient } from '@qdrant/qdrant-js';
 
-// --- Qdrant Client ---
 const qdrantClient = new QdrantClient({
-    // Use the Docker service name as the host
     host: process.env.QDRANT_HOST || 'qdrant', 
-    // Qdrant's default API port
     port: parseInt(process.env.QDRANT_PORT || '6333', 10), 
 });
 
-// --- Constants ---
-// Choose a standard dimension for your embeddings. 
-// If using Jina Embeddings v2 (as suggested) or a common HuggingFace model, 
-// 768 or 1024 are typical. We'll use 1024 for Jina v3.
 const VECTOR_DIMENSION = 1024; 
 const COLLECTION_NAME = 'news_articles';
-
-/**
- * Initializes the Qdrant collection for news article vectors.
- */
 export async function initQdrant(): Promise<void> {
     try {
         console.log('Attempting to check Qdrant collection status...');
@@ -32,15 +19,15 @@ export async function initQdrant(): Promise<void> {
             await qdrantClient.createCollection(COLLECTION_NAME, {
                 vectors: {
                     size: VECTOR_DIMENSION,
-                    distance: 'Cosine', // Common choice for semantic search
+                    distance: 'Cosine',
                 },
             });
-            console.log(`✅ Qdrant collection '${COLLECTION_NAME}' created.`);
+            console.log(`qdrant collection '${COLLECTION_NAME}' created.`);
         } else {
-            console.log(`✅ Qdrant collection '${COLLECTION_NAME}' already exists.`);
+            console.log(`qdrant collection '${COLLECTION_NAME}' already exists.`);
         }
     } catch (err) {
-        console.error('❌ Error initializing Qdrant:', err);
+        console.error('Error initializing qdrant:', err);
     }
 }
 
