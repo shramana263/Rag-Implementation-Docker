@@ -15,5 +15,5 @@ logs/
 *.log
 *.tsbuildinfo
 .idea/
-package-lock.json
+# package-lock.json
 yarn.lock
