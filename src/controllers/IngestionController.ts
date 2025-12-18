@@ -1,15 +1,9 @@
-// /src/controllers/IngestionController.ts
-
 import { Request, Response } from 'express';
 import { runIngestionPipeline } from '../services/IngestionService';
 import { mockNewsArticles } from '../data/mockNewsData';
 
-/**
- * Handles the POST /ingest request to trigger the document processing pipeline.
- */
 export async function ingestDocuments(req: Request, res: Response): Promise<void> {
     try {
-        // You might use a queue (BullMQ) here for the bonus point
         const count = await runIngestionPipeline(); 
         
         res.status(200).json({

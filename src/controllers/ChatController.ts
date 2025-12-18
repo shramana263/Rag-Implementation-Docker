@@ -1,25 +1,16 @@
-// /src/controllers/ChatController.ts
-
 import { Request, Response } from 'express';
 import { processChatQuery } from '../services/ChatService';
 import { getHistory, clearHistory } from '../services/LogService';
 import { clearContext } from '../services/CacheService';
 
-/**
- * Interface for the POST /chat payload
- */
 interface ChatRequest {
     sessionId: string;
     query: string;
 }
 
-/**
- * POST /chat - Accepts sessionId and query. Returns the final text.
- */
 export async function chat(req: Request<{}, {}, ChatRequest>, res: Response): Promise<void> {
     const { sessionId, query } = req.body;
 
-    // A. Rigorous Validation (Mandatory for API Design Score)
     if (!sessionId || !query) {
         res.status(400).json({ status: 'error', message: 'Missing required fields: sessionId and query.' });
         return;
@@ -27,7 +18,7 @@ export async function chat(req: Request<{}, {}, ChatRequest>, res: Response): Pr
 
     try {
         const responseText = await processChatQuery(sessionId, query);
-        // Note: For simplicity, we return the full text instead of streaming in this example
+        // Note: For simplicity, full text is returned instead of streaming in this example
         res.status(200).json({ 
             sessionId: sessionId,
             response: responseText 
@@ -42,13 +33,11 @@ export async function chat(req: Request<{}, {}, ChatRequest>, res: Response): Pr
     }
 }
 
-/**
- * GET /history/:sessionId - Fetches past Q&A from SQL.
- */
+
 export async function getSessionHistory(req: Request, res: Response): Promise<void> {
     const { sessionId } = req.params;
     try {
-        const history = await getHistory(sessionId); // From LogService (SQL)
+        const history = await getHistory(sessionId); 
         res.status(200).json({ sessionId, history });
     } catch (error) {
         console.error('Error fetching history:', error);
@@ -56,9 +45,6 @@ export async function getSessionHistory(req: Request, res: Response): Promise<vo
     }
 }
 
-/**
- * DELETE /history/:sessionId - Clears SQL and Redis data.
- */
 export async function deleteSessionHistory(req: Request, res: Response): Promise<void> {
     const { sessionId } = req.params;
     try {

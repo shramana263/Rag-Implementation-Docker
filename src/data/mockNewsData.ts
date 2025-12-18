@@ -1,10 +1,5 @@
-// /src/data/mockNewsData.ts
-
 import { RawArticle } from '../types/article';
 
-// --- MOCK DATA ---
-// NOTE: You must expand this array to contain approximately 50 unique articles 
-// with varying content to fully satisfy the assignment requirement (~50 news articles).
 export type MockRawArticle = {
     id: string;
     title: string;
